@@ -8,7 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(archiveTool main.cpp
     archiver.hpp
     miniJson.hpp
-    fnv1a.hpp)
+    fnv1a.hpp
+    endianHelpers.hpp)
 
 #find_package(ZSTD REQUIRED)
 

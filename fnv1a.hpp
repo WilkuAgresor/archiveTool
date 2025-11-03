@@ -1,55 +1,48 @@
-#include <fstream>
-#include <vector>
-#include <string>
-#include <stdexcept>
+#pragma once
 #include <cstdint>
+#include <filesystem>
+#include <fstream>
+#include <stdexcept>
+#include <string>
 
-constexpr uint64_t FNV_OFFSET_BASIS = 14695981039346656037ULL;
-constexpr uint64_t FNV_PRIME        = 1099511628211ULL;
-constexpr size_t   HASH_PREFIX_SIZE = 64 * 1024; // 64 KiB
+inline constexpr uint64_t FNV1A_OFFSET_BASIS = 14695981039346656037ull;
+inline constexpr uint64_t FNV1A_PRIME        = 1099511628211ull;
 
-static uint64_t fnv1a_update(uint64_t hash, const void* data, size_t len)
+#include <bit>
+
+
+/**
+ * Compute 64-bit FNV-1a hash from memory buffer.
+ */
+inline uint64_t fnv1a_hash(const std::string& data)
 {
-    const unsigned char* p = static_cast<const unsigned char*>(data);
-    for (size_t i = 0; i < len; ++i)
-        hash = (hash ^ p[i]) * FNV_PRIME;
-    return hash;
-}
-// Compute the FNV-1a hash of the first `prefixSize` bytes of the file
-uint64_t computePrefixHash(const std::string& path, size_t prefixSize = HASH_PREFIX_SIZE)
-{
-    std::ifstream file(path, std::ios::binary);
-    if (!file)
-        throw std::runtime_error("Cannot open file: " + path);
-
-    std::vector<char> buffer(prefixSize);
-    file.read(buffer.data(), buffer.size());
-    std::streamsize bytesRead = file.gcount();
-
-    uint64_t hash = FNV_OFFSET_BASIS;
-    hash = fnv1a_update(hash, buffer.data(), static_cast<size_t>(bytesRead));
-
-    return hash;
-}
-
-// Compute the FNV-1a hash of the *entire* file efficiently
-uint64_t computeFullHash(const std::string& path, size_t chunkSize = 256 * 1024)
-{
-    std::ifstream file(path, std::ios::binary);
-    if (!file)
-        throw std::runtime_error("Cannot open file: " + path);
-
-    std::vector<char> buffer(chunkSize);
-    uint64_t hash = FNV_OFFSET_BASIS;
-
-    while (file)
+    uint64_t hash = FNV1A_OFFSET_BASIS;
+    for (unsigned char c : data)
     {
-        file.read(buffer.data(), buffer.size());
-        std::streamsize bytesRead = file.gcount();
-        if (bytesRead > 0)
-            hash = fnv1a_update(hash, buffer.data(), static_cast<size_t>(bytesRead));
+        hash = (hash ^ c) * FNV1A_PRIME;
+    }
+    return hash;
+}
+
+/**
+ * Load file contents into provided buffer and compute FNV-1a hash.
+ * The buffer is resized automatically and can be reused.
+ */
+inline uint64_t fnv1a_hash_file(const std::filesystem::path& path, std::string& buffer)
+{
+    std::ifstream ifs(path, std::ios::binary | std::ios::ate);
+    if (!ifs)
+        throw std::runtime_error("Failed to open file: " + path.string());
+
+    std::streamsize size = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
+
+    buffer.resize(static_cast<size_t>(size));
+    if (size > 0)
+    {
+        if (!ifs.read(buffer.data(), size))
+            throw std::runtime_error("Failed to read file: " + path.string());
     }
 
-    return hash;
+    return fnv1a_hash(buffer);
 }
-
