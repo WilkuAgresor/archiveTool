@@ -3,7 +3,7 @@ set -euo pipefail
 
 RANDOM=$(( (SECONDS ^ $$ ^ $(date +%N)) & 0x7FFF ))
 
-ROOT_DIR="random_fs"
+ROOT_DIR="random_fs_b"
 MAX_DEPTH=10
 MIN_FILES=5
 MAX_FILES=20
@@ -60,7 +60,7 @@ generate_files() {
                 if (( size_bytes < 5*1024*1024 )); then
                     head -c "$size_bytes" /dev/urandom >"$fpath" 2>/dev/null || true
                 else
-                    dd if=/dev/urandom of="$fpath" bs=1M count=20 status=none 2>/dev/null || true
+                    dd if=/dev/urandom of="$fpath" bs=1M count=2000 status=none 2>/dev/null || true
                     truncate -s "$size_bytes" "$fpath"
                 fi
                 ;;

@@ -9,7 +9,9 @@ add_executable(archiveTool main.cpp
     archiver.hpp
     miniJson.hpp
     fnv1a.hpp
-    endianHelpers.hpp)
+    endianHelpers.hpp
+    zstdCtxWrapper.hpp
+)
 
 #find_package(ZSTD REQUIRED)
 
