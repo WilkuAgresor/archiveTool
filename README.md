@@ -32,15 +32,20 @@ ArchiveTool consistently achieved significantly better compression ratios and fa
 Zstd combined with custom deduplication made wonders.
 
 🧪 Benchmark Tools
+
 🔹 Random binary data generator
 
 Creates some uncompressible binary random files, tar+gzip scored negative compression values, while archiveTool typically scores near 1:
+
 ./benchmarkGen.sh
 
 
 🔹 Simulated log/text filesystem generator
+
 Populates a folder tree with large simulated text/log files:
+
 ./benchmarkFsGenText.sh
+
 ⚠️ This script may loop indefinitely — just stop it once you have enough data (a few GB). It’s faster to kill than fix, and it does the job well.
 
 🔹 Compression ratio checker
