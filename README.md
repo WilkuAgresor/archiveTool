@@ -49,15 +49,20 @@ Populates a folder tree with large simulated text/log files:
 ⚠️ This script may loop indefinitely — just stop it once you have enough data (a few GB). It’s faster to kill than fix, and it does the job well.
 
 🔹 Compression ratio checker
+
 Compare input folder size to the resulting archive:
+
 ./compressionRatio.sh [input_folder] [archive_file]
 
 
 Use with time to measure runtime:
+
 time ./archiveTool pack ...
 
 ⚠️ Known Limitations
+
 File metadata (timestamps, permissions, ownership) is not preserved.
+
 To verify integrity, compare file checksums:
 
 rsync -rinc --delete --out-format='%n' root/ unpacked/
