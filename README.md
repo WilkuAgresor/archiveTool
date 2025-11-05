@@ -19,5 +19,5 @@ Benchmark tools:
 Run the program through 'time'.
 
 Flaws:
-The archive does not retain content metadata (last-modified-time, permissions, owners), so validation of pack/unpack operation requires 'rinc'.
+The archive does not retain content metadata (last-modified-time, permissions, owners), so validation of pack/unpack operation requires checking by checksum: e.g. rsync -c:
 rsync -rinc --delete --out-format='%n' root/ unpacked/
