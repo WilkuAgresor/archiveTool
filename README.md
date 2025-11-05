@@ -24,12 +24,6 @@ Library dependencies: Zstandard by Meta (Facebook) https://github.com/facebook/z
 # Unpack an archive to a directory
 ./archiveTool unpack [archive_path] [output_dir]
 
-
-Example:
-
-./archiveTool pack ./data ./data.arc
-./archiveTool unpack ./data.arc ./data_unpacked
-
 📊 Benchmarks
 
 Results were compared against tar -> gzip -6.
